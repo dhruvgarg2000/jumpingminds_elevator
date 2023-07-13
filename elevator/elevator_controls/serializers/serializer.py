@@ -1,5 +1,21 @@
 from rest_framework import serializers
 
+from elevator_controls.models import Elevator
+
+
+class ElevatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Elevator
+        fields = [
+            "id",
+            "moving_status",
+            "is_door_open",
+            "is_operational",
+            "current_floor",
+            "target_floor",
+            "service_request",
+        ]
+
 
 class ElevatorMovingStatusSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
@@ -19,3 +35,8 @@ class ElevatorNextDestinationSerializer(serializers.Serializer):
 class ElevatorServiceRequestSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
     service_request = serializers.ListField(required=True)
+
+
+class ElevatorOperationalStatusSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    is_operational = serializers.BooleanField(required=True)

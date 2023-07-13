@@ -1,8 +1,8 @@
 from django.urls import path, include
 from rest_framework import routers
-from elevator_controls.views.initialize_elevator_system import ElevatorSystemViewSet
+from elevator_controls.views.elevator_system import ElevatorSystemViewSet
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 
 router.register('', ElevatorSystemViewSet, basename="elevator")
 

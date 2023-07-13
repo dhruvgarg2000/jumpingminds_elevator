@@ -4,7 +4,7 @@ from elevator_controls.models import Elevator
 
 def add_elevator_service_request(target_floor):
     minimum_difference = 1000
-    selected_elevator = ''
+    selected_elevator = ""
     elevator_objs = Elevator.objects.all()
     # find the closest elevator
     for elevator_obj in elevator_objs:
@@ -19,6 +19,7 @@ def add_elevator_service_request(target_floor):
     selected_elevator.service_request.append(target_floor)
     selected_elevator.save()
     return
+
 
 def process_elevator():
     elevator_objs = Elevator.objects.all()
@@ -41,6 +42,7 @@ def process_elevator():
             elevator.save()
         elevator.moving_status = 0
         elevator.save()
+
 
 def elevator_moving_direction(elevator, target_floor):
     if elevator.current_floor < target_floor:

@@ -4,8 +4,8 @@ from elevator_controls.views.elevator_system import ElevatorSystemViewSet
 
 router = routers.SimpleRouter()
 
-router.register('', ElevatorSystemViewSet, basename="elevator")
+router.register(r'elevator', ElevatorSystemViewSet, basename="elevator")
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]

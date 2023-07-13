@@ -1,9 +1,13 @@
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from elevator_controls.helpers.elevator_request_handler import process_elevator
-from elevator_controls.helpers.elevator_request_handler import add_elevator_service_request
-
+from elevator_controls.helpers.elevator_request_handler import (
+    add_elevator_service_request,
+    process_elevator
+)
+from elevator_controls.serializers.serializer import (
+    ElevatorServiceRequestSerializer,
+)
 from elevator_controls.models import Elevator
 
 class ElevatorSystemViewSet(viewsets.ViewSet):
@@ -32,3 +36,20 @@ class ElevatorSystemViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_201_CREATED)
         except:
             return Response({"error" : "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=["get"])
+    def service_request(self, request):
+        try:
+            elevator_id = request.GET.get("elevator_id")
+            elevator = Elevator.objects.get(id=elevator_id)
+            serializer = ElevatorServiceRequestSerializer(elevator)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Elevator.DoesNotExist:
+            return Response(
+                {"error": "Elevator not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except:
+            return Response(
+                {"error": "Internal Server Error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

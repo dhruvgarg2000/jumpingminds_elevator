@@ -8,6 +8,8 @@ from elevator_controls.helpers.elevator_request_handler import (
 from elevator_controls.serializers.serializer import (
     ElevatorMovingStatusSerializer,
     ElevatorNextDestinationSerializer,
+    ElevatorOperationalStatusSerializer,
+    ElevatorSerializer,
     ElevatorServiceRequestSerializer,
 )
 from elevator_controls.models import Elevator
@@ -80,6 +82,27 @@ class ElevatorSystemViewSet(viewsets.ViewSet):
             elevator = Elevator.objects.get(id=elevator_id)
             serializer = ElevatorMovingStatusSerializer(elevator)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(
+                {"error": "Internal Server Error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    @action(detail=False, methods=["patch"])
+    def update_operational_status(self, request):
+        try:
+            serializer = ElevatorOperationalStatusSerializer(data=request.data)
+            if serializer.is_valid():
+                elevator = Elevator.objects.get(id=serializer.data["id"])
+                elevator.is_operational = serializer.data["is_operational"]
+                elevator.save()
+                serializer = ElevatorSerializer(elevator)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"error": "Elevator ID and operational status are mandatory"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         except:
             return Response(
                 {"error": "Internal Server Error"},

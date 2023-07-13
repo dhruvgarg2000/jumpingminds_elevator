@@ -6,6 +6,7 @@ from elevator_controls.helpers.elevator_request_handler import (
     process_elevator
 )
 from elevator_controls.serializers.serializer import (
+    ElevatorDoorStatusSerializer,
     ElevatorMovingStatusSerializer,
     ElevatorNextDestinationSerializer,
     ElevatorOperationalStatusSerializer,
@@ -101,6 +102,27 @@ class ElevatorSystemViewSet(viewsets.ViewSet):
             else:
                 return Response(
                     {"error": "Elevator ID and operational status are mandatory"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        except:
+            return Response(
+                {"error": "Internal Server Error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    @action(detail=False, methods=["patch"])
+    def update_door_status(self, request):
+        try:
+            serializer = ElevatorDoorStatusSerializer(data=request.data)
+            if serializer.is_valid():
+                elevator = Elevator.objects.get(id=serializer.data["id"])
+                elevator.is_door_open = serializer.data["is_door_open"]
+                elevator.save()
+                serializer = ElevatorSerializer(elevator)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"error": "Elevator ID and door status are mandatory"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         except:

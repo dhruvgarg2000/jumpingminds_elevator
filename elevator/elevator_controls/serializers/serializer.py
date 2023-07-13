@@ -40,3 +40,8 @@ class ElevatorServiceRequestSerializer(serializers.Serializer):
 class ElevatorOperationalStatusSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
     is_operational = serializers.BooleanField(required=True)
+
+
+class ElevatorDoorStatusSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    is_door_open = serializers.BooleanField(required=True)

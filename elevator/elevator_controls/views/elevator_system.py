@@ -6,6 +6,7 @@ from elevator_controls.helpers.elevator_request_handler import (
     process_elevator
 )
 from elevator_controls.serializers.serializer import (
+    ElevatorMovingStatusSerializer,
     ElevatorNextDestinationSerializer,
     ElevatorServiceRequestSerializer,
 )
@@ -66,6 +67,19 @@ class ElevatorSystemViewSet(viewsets.ViewSet):
             return Response(
                 {"error": "Elevator not found"}, status=status.HTTP_404_NOT_FOUND
             )
+        except:
+            return Response(
+                {"error": "Internal Server Error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    @action(detail=False, methods=["get"])
+    def moving_status(self, request):
+        try:
+            elevator_id = request.GET.get("elevator_id")
+            elevator = Elevator.objects.get(id=elevator_id)
+            serializer = ElevatorMovingStatusSerializer(elevator)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except:
             return Response(
                 {"error": "Internal Server Error"},

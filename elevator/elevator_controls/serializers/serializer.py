@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
 
+class ElevatorMovingStatusSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    moving_status = serializers.IntegerField(required=True)
+
+
 class ElevatorNextDestinationSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
     next_destination = serializers.SerializerMethodField()
